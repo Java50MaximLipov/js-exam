@@ -1,35 +1,27 @@
 class Deferred {
-    constructor() {
-      this.callbacks = [];
-      this.resolved = false;
-      this.result = null;
-    }
-    then(callback) {
-      this.callbacks.push(callback);
-      return this;
-    }
-    resolve(result) {
-      this.result = result;
-      this.resolved = true;
-      let res = this.result;
-      for (let i = 0; i < this.callbacks.length; i++) {
-        const callback = this.callbacks[i];
-        res = callback(res);
-      }
-    }
+  #functions
+  constructor() {
+    this.#functions = [];
   }
+  then(fun) {
+    this.#functions.push(fun);
+  }
+  resolve(value) {
+    this.#functions.forEach(fun => value = fun(value))
+  }
+}
 
 const d = new Deferred();
 d.then(function (res) {
-    console.log("1 ", res);
-    return "a";
+  console.log("1 ", res);
+  return "a";
 });
 d.then(function (res) {
-    console.log("2 ", res);
-    return "b";
+  console.log("2 ", res);
+  return "b";
 });
 d.then(function (res) {
-    console.log("3 ", res);
-    return "c";
+  console.log("3 ", res);
+  return "c";
 });
 d.resolve('hello');
